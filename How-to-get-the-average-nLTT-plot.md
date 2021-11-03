@@ -1,38 +1,53 @@
+How to get the average nLTT plot
+================
+
+Calculating the average nLTT plot of multiple phylogenies is not a
+trivial tasks. The function `get_nltt_values()` does exactly this.
+
+## Examples
+
+For all examples, the following R code must be run:
+
 ``` r
-#For all examples, the following R code must be run:
 library(ape)
 library(Hmisc)
 library(nLTT) # nolint
 library(ggplot2)
 library(testit)
+```
 
-#Example: Easy trees
-#Create two easy trees:
+### Example: Easy trees
+
+Create two easy trees:
+
+``` r
 newick1 <- "((A:1,B:1):2,C:3);"
 newick2 <- "((A:2,B:2):1,C:3);"
 phylogeny1 <- ape::read.tree(text = newick1)
 phylogeny2 <- ape::read.tree(text = newick2)
 phylogenies <- c(phylogeny1, phylogeny2)
+```
 
-#There are very similar. phylogeny1 has short tips:
+There are very similar. phylogeny1 has short tips:
 
+``` r
 plot(phylogeny1)
 add.scale.bar() #nolint
 ```
 
-![](https://i.imgur.com/uxVRNnW.png)
+![](How-to-get-the-average-nLTT-plot_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+This can be observed in the nLTT plot:
 
 ``` r
-#This can be observed in the nLTT plot:
-
 nltt_plot(phylogeny1, ylim = c(0, 1))
 ```
 
-![](https://i.imgur.com/xecsAuL.png)
+![](How-to-get-the-average-nLTT-plot_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+As a collection of timepoints:
 
 ``` r
-#As a collection of timepoints:
-
 t <- nLTT::get_phylogeny_nltt_matrix(phylogeny1)
 knitr::kable(t)
 ```
@@ -43,9 +58,9 @@ knitr::kable(t)
 | 0.6666667 | 0.6666667 |
 | 1.0000000 | 1.0000000 |
 
-``` r
-#Plotting those timepoints:
+Plotting those timepoints:
 
+``` r
 df <- as.data.frame(nLTT::get_phylogeny_nltt_matrix(phylogeny1))
 qplot(
   time,
@@ -58,28 +73,28 @@ qplot(
 )
 ```
 
-![](https://i.imgur.com/90uRYV7.png)
+![](How-to-get-the-average-nLTT-plot_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+phylogeny2 has longer tips:
 
 ``` r
-#phylogeny2 has longer tips:
-
 plot(phylogeny2)
 add.scale.bar() #nolint
 ```
 
-![](https://i.imgur.com/W1g8PxR.png)
+![](How-to-get-the-average-nLTT-plot_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+Also this can be observed in the nLTT plot:
 
 ``` r
-#Also this can be observed in the nLTT plot:
-
 nltt_plot(phylogeny2, ylim = c(0, 1))
 ```
 
-![](https://i.imgur.com/IOLrrNK.png)
+![](How-to-get-the-average-nLTT-plot_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+As a collection of timepoints:
 
 ``` r
-#As a collection of timepoints:
-
 t <- nLTT::get_phylogeny_nltt_matrix(phylogeny2)
 knitr::kable(t)
 ```
@@ -90,9 +105,9 @@ knitr::kable(t)
 | 0.3333333 | 0.6666667 |
 | 1.0000000 | 1.0000000 |
 
-``` r
-#Plotting those timepoints:
+Plotting those timepoints:
 
+``` r
 df <- as.data.frame(nLTT::get_phylogeny_nltt_matrix(phylogeny2))
 qplot(
   time,
@@ -105,15 +120,15 @@ qplot(
 )
 ```
 
-![](https://i.imgur.com/UnQ0GHB.png)
+![](How-to-get-the-average-nLTT-plot_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+
+The average nLTT plot should be somewhere in the middle.
+
+It is constructed from stretched nLTT matrices.
+
+Here is the nLTT matrix of the first phylogeny:
 
 ``` r
-#The average nLTT plot should be somewhere in the middle.
-
-#It is constructed from stretched nLTT matrices.
-
-#Here is the nLTT matrix of the first phylogeny:
-
 t <-
   nLTT::stretch_nltt_matrix(nLTT::get_phylogeny_nltt_matrix(phylogeny1),
                             dt = 0.20,
@@ -130,9 +145,9 @@ knitr::kable(t)
 | 0.8 | 1.0000000 |
 | 1.0 | 1.0000000 |
 
-``` r
-#Here is the nLTT matrix of the second phylogeny:
+Here is the nLTT matrix of the second phylogeny:
 
+``` r
 t <-
   nLTT::stretch_nltt_matrix(nLTT::get_phylogeny_nltt_matrix(phylogeny2),
                             dt = 0.20,
@@ -149,9 +164,9 @@ knitr::kable(t)
 | 0.8 | 1.0000000 |
 | 1.0 | 1.0000000 |
 
-``` r
-#Here is the average nLTT matrix of both phylogenies:
+Here is the average nLTT matrix of both phylogenies:
 
+``` r
 t <- nLTT::get_average_nltt_matrix(phylogenies, dt = 0.20)
 knitr::kable(t)
 ```
@@ -165,16 +180,19 @@ knitr::kable(t)
 | 0.8 | 1.0000000 |
 | 1.0 | 1.0000000 |
 
+Observe how the numbers get averaged.
+
+The same, now shown as a plot:
+
 ``` r
-#Observe how the numbers get averaged.
+nLTT::nltts_plot(phylogenies, dt = 0.20, plot_nltts = TRUE)
+```
 
-#The same, now shown as a plot:
+![](How-to-get-the-average-nLTT-plot_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
-nLTT::get_average_nltt(phylogenies, dt = 0.20, plot_nltts = TRUE)
-#> Error: 'get_average_nltt' is not an exported object from 'namespace:nLTT'
+Here a demo how the new function works:
 
-#Here a demo how the new function works:
-
+``` r
 t <- nLTT::get_nltt_values(c(phylogeny1, phylogeny2), dt = 0.2)
 knitr::kable(t)
 ```
@@ -194,13 +212,16 @@ knitr::kable(t)
 | 2   | 0.8 | 1.0000000 |
 | 2   | 1.0 | 1.0000000 |
 
+Plotting options, first create a data frame:
+
 ``` r
-#Plotting options, first create a data frame:
-
 df <- nLTT::get_nltt_values(c(phylogeny1, phylogeny2), dt = 0.01)
+```
 
-#Here we see an averaged nLTT plot, where the original nLTT values are still visible:
+Here we see an averaged nLTT plot, where the original nLTT values are
+still visible:
 
+``` r
 qplot(
   t,
   nltt,
@@ -216,11 +237,12 @@ qplot(
                geom = "smooth")
 ```
 
-![](https://i.imgur.com/qaQKJKW.png)
+![](How-to-get-the-average-nLTT-plot_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+
+Here we see an averaged nLTT plot, with the original nLTT values
+omitted:
 
 ``` r
-#Here we see an averaged nLTT plot, with the original nLTT values omitted:
-
 qplot(
   t,
   nltt,
@@ -234,12 +256,13 @@ qplot(
                geom = "smooth")
 ```
 
-![](https://i.imgur.com/x2a41ky.png)
+![](How-to-get-the-average-nLTT-plot_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
+### Example: Harder trees
+
+Create two harder trees:
 
 ``` r
-#Example: Harder trees
-#Create two harder trees:
-
 newick1 <- "((A:1,B:1):1,(C:1,D:1):1);"
 newick2 <-
   paste0(
@@ -249,26 +272,29 @@ newick2 <-
 phylogeny1 <- ape::read.tree(text = newick1)
 phylogeny2 <- ape::read.tree(text = newick2)
 phylogenies <- c(phylogeny1, phylogeny2)
+```
 
-#There are different. phylogeny1 is relatively simple, with two branching events happening at the same time:
+There are different. phylogeny1 is relatively simple, with two branching
+events happening at the same time:
 
+``` r
 plot(phylogeny1)
 add.scale.bar() #nolint
 ```
 
-![](https://i.imgur.com/lDE49ud.png)
+![](How-to-get-the-average-nLTT-plot_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
+
+This can be observed in the nLTT plot:
 
 ``` r
-#This can be observed in the nLTT plot:
-
 nltt_plot(phylogeny1, ylim = c(0, 1))
 ```
 
-![](https://i.imgur.com/Hq5CSky.png)
+![](How-to-get-the-average-nLTT-plot_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+
+As a collection of timepoints:
 
 ``` r
-#As a collection of timepoints:
-
 t <- nLTT::get_phylogeny_nltt_matrix(phylogeny2)
 knitr::kable(t)
 ```
@@ -285,26 +311,26 @@ knitr::kable(t)
 | 0.8571429 | 0.8888889 |
 | 1.0000000 | 1.0000000 |
 
-``` r
-#phylogeny2 is more elaborate:
+phylogeny2 is more elaborate:
 
+``` r
 plot(phylogeny2)
 add.scale.bar() #nolint
 ```
 
-![](https://i.imgur.com/SZjFGN7.png)
+![](How-to-get-the-average-nLTT-plot_files/figure-gfm/unnamed-chunk-23-1.png)<!-- -->
+
+Also this can be observed in the nLTT plot:
 
 ``` r
-#Also this can be observed in the nLTT plot:
-
 nltt_plot(phylogeny2, ylim = c(0, 1))
 ```
 
-![](https://i.imgur.com/In7mkRe.png)
+![](How-to-get-the-average-nLTT-plot_files/figure-gfm/unnamed-chunk-24-1.png)<!-- -->
+
+As a collection of timepoints:
 
 ``` r
-#As a collection of timepoints:
-
 t <- nLTT::get_phylogeny_nltt_matrix(phylogeny2)
 knitr::kable(t)
 ```
@@ -321,13 +347,13 @@ knitr::kable(t)
 | 0.8571429 | 0.8888889 |
 | 1.0000000 | 1.0000000 |
 
+The average nLTT plot should be somewhere in the middle.
+
+It is constructed from stretched nLTT matrices.
+
+Here is the nLTT matrix of the first phylogeny:
+
 ``` r
-#The average nLTT plot should be somewhere in the middle.
-
-#It is constructed from stretched nLTT matrices.
-
-#Here is the nLTT matrix of the first phylogeny:
-
 t <-
   nLTT::stretch_nltt_matrix(nLTT::get_phylogeny_nltt_matrix(phylogeny1),
                             dt = 0.20,
@@ -344,9 +370,9 @@ knitr::kable(t)
 | 0.8 | 1.0 |
 | 1.0 | 1.0 |
 
-``` r
-#Here is the nLTT matrix of the second phylogeny:
+Here is the nLTT matrix of the second phylogeny:
 
+``` r
 t <-
   nLTT::stretch_nltt_matrix(nLTT::get_phylogeny_nltt_matrix(phylogeny2),
                             dt = 0.20,
@@ -363,9 +389,9 @@ knitr::kable(t)
 | 0.8 | 0.6666667 |
 | 1.0 | 1.0000000 |
 
-``` r
-#Here is the average nLTT matrix of both phylogenies:
+Here is the average nLTT matrix of both phylogenies:
 
+``` r
 t <- nLTT::get_average_nltt_matrix(phylogenies, dt = 0.20)
 knitr::kable(t)
 ```
@@ -379,11 +405,11 @@ knitr::kable(t)
 | 0.8 | 0.8333333 |
 | 1.0 | 1.0000000 |
 
+Observe how the numbers get averaged.
+
+Here a demo how the new function works:
+
 ``` r
-#Observe how the numbers get averaged.
-
-#Here a demo how the new function works:
-
 t <- nLTT::get_nltt_values(c(phylogeny1, phylogeny2), dt = 0.2)
 knitr::kable(t)
 ```
@@ -403,13 +429,16 @@ knitr::kable(t)
 | 2   | 0.8 | 0.6666667 |
 | 2   | 1.0 | 1.0000000 |
 
+Plotting options, first create a data frame:
+
 ``` r
-#Plotting options, first create a data frame:
-
 df <- nLTT::get_nltt_values(c(phylogeny1, phylogeny2), dt = 0.01)
+```
 
-#Here we see an averaged nLTT plot, where the original nLTT values are still visible:
+Here we see an averaged nLTT plot, where the original nLTT values are
+still visible:
 
+``` r
 qplot(
   t,
   nltt,
@@ -425,11 +454,12 @@ qplot(
                geom = "smooth")
 ```
 
-![](https://i.imgur.com/4f2nF2F.png)
+![](How-to-get-the-average-nLTT-plot_files/figure-gfm/unnamed-chunk-31-1.png)<!-- -->
+
+Here we see an averaged nLTT plot, with the original nLTT values
+omitted:
 
 ``` r
-#Here we see an averaged nLTT plot, with the original nLTT values omitted:
-
 qplot(
   t,
   nltt,
@@ -443,12 +473,13 @@ qplot(
                geom = "smooth")
 ```
 
-![](https://i.imgur.com/hOquuIC.png)
+![](How-to-get-the-average-nLTT-plot_files/figure-gfm/unnamed-chunk-32-1.png)<!-- -->
+
+### Example: Five random trees
+
+Create three random trees:
 
 ``` r
-#Example: Five random trees
-#Create three random trees:
-
 set.seed(42)
 phylogeny1 <- rcoal(10)
 phylogeny2 <- rcoal(20)
@@ -464,9 +495,11 @@ phylogenies <- c(phylogeny1,
                  phylogeny5,
                  phylogeny6,
                  phylogeny7)
+```
 
-#Here a demo how the new function works:
+Here a demo how the new function works:
 
+``` r
 t <- nLTT::get_nltt_values(phylogenies, dt = 0.2)
 knitr::kable(t)
 ```
@@ -516,9 +549,10 @@ knitr::kable(t)
 | 7   | 0.8 | 0.1142857 |
 | 7   | 1.0 | 1.0000000 |
 
-``` r
-#Here we see an averaged nLTT plot, where the original nLTT values are still visible:
+Here we see an averaged nLTT plot, where the original nLTT values are
+still visible:
 
+``` r
 qplot(
   t,
   nltt,
@@ -534,11 +568,12 @@ qplot(
                geom = "smooth")
 ```
 
-![](https://i.imgur.com/NcbyW6i.png)
+![](How-to-get-the-average-nLTT-plot_files/figure-gfm/unnamed-chunk-35-1.png)<!-- -->
+
+Here we see an averaged nLTT plot, with the original nLTT values
+omitted:
 
 ``` r
-#Here we see an averaged nLTT plot, with the original nLTT values omitted:
-
 qplot(
   t,
   nltt,
@@ -552,6 +587,4 @@ qplot(
                geom = "smooth")
 ```
 
-![](https://i.imgur.com/D2wCME2.png)
-
-<sup>Created on 2021-11-02 by the [reprex package](https://reprex.tidyverse.org) (v2.0.1)</sup>
+![](How-to-get-the-average-nLTT-plot_files/figure-gfm/unnamed-chunk-36-1.png)<!-- -->
